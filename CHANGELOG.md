@@ -5,6 +5,20 @@ All notable changes to Container Package Mapper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1] - 2025-06-20
+
+### Changed
+- Enhanced error handling and logging across all scripts
+- Improved package mapping with better API integration
+- Updated archive scripts to maintain consistency
+- Better handling of edge cases in container detection
+- Improved robustness in ultimate_migration_script.sh with additional error recovery
+
+### Fixed
+- Edge cases in container package detection
+- API request handling for better reliability
+- Error propagation in backup operations
+
 ## [4.0] - 2024-01-20
 
 ### Added
