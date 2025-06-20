@@ -24,7 +24,8 @@ set -o nounset
 set -o pipefail
 
 # --- Constants ---
-readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+SCRIPT_NAME="$(basename "$0")"
 readonly API_BASE_URL="https://repology.org/api/v1"
 readonly USER_AGENT="Fedora-to-Arch-Mapper-Script/1.6; (+https://github.com/doublegate/)"
 readonly CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/pkg-mapper"

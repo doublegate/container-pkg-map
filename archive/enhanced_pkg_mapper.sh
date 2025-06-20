@@ -45,7 +45,8 @@ set -o nounset
 set -o pipefail
 
 # --- Constants & Configuration ---
-readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_VERSION="3.0"
 readonly SCRIPT_URL="https://github.com/doublegate/container-pkg-map"
 readonly CONTACT_EMAIL="parobek@gmail.com"
@@ -56,7 +57,8 @@ readonly CACHE_TTL_SECONDS=$((24 * 60 * 60)) # 24 hours
 # --- Determine User and Home Directory ---
 # This is critical for running commands correctly, especially if sudo is involved.
 readonly REAL_USER="${SUDO_USER:-$USER}"
-readonly USER_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
+readonly USER_HOME
+USER_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
 readonly CACHE_DIR="${XDG_CACHE_HOME:-$USER_HOME/.cache}/enhanced-pkg-mapper"
 
 # --- Global Variables ---
