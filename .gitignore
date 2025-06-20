@@ -1,0 +1,59 @@
+# Backup directories
+migrate-*/
+backup-*/
+restore-*/
+
+# Cache directories
+.cache/
+*.cache
+
+# Borg directories
+.borg/
+borg-repo/
+
+# Log files
+*.log
+migrate.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Package lists (generated)
+*-packages.txt
+*_packages.txt
+fedora_to_arch_mapping.txt
+containers_list.txt
+flatpaks.txt
+
+# ISO files
+*.iso
+*.sum
+*.sig
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Test directories
+test/
+tests/
+testing/
