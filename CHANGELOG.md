@@ -5,7 +5,7 @@ All notable changes to Container Package Mapper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.1] - 2025-06-20
+## [4.5.1] - 2025-06-20
 
 ### Changed
 - Enhanced error handling and logging across all scripts
@@ -18,6 +18,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Edge cases in container package detection
 - API request handling for better reliability
 - Error propagation in backup operations
+
+## [4.5.0] - 2025-06-15
+
+### Added
+- Extended validation for container detection
+- Improved logging system with better error tracking
+- Enhanced API retry logic with exponential backoff
+
+## [4.4.0] - 2025-05-01
+
+### Added
+- Support for additional container types
+- Better handling of network failures
+- Improved cache management
+
+## [4.3.0] - 2025-03-15
+
+### Changed
+- Optimized package mapping algorithm
+- Improved performance for large package lists
+- Better memory usage during backup operations
+
+## [4.2.0] - 2025-02-01
+
+### Added
+- Support for custom Repology API endpoints
+- Better handling of rate limiting
+- Improved progress reporting
+
+## [4.1.0] - 2024-12-15
+
+### Fixed
+- Various bug fixes and stability improvements
+- Better error messages for common issues
 
 ## [4.0] - 2024-01-20
 

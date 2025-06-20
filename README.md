@@ -1,5 +1,7 @@
 # Container Package Mapper
 
+[![Version](https://img.shields.io/badge/version-4.5.1-blue.svg)](https://github.com/doublegate/container-pkg-map/releases)
+
 A comprehensive migration and backup tool for Fedora-based systems (including Bazzite, Silverblue, Kinoite) moving to Arch Linux.
 
 ## Features
