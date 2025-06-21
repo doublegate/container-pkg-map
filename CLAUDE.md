@@ -147,3 +147,30 @@ The script detects the package manager in each container and runs appropriate co
 - Fedora-based: `rpm -qa --qf '%{NAME}\n'`
 
 Results are stored per container for selective restoration.
+
+## Development Standards
+
+### Code Quality
+- All scripts must pass shellcheck validation
+- Follow markdown lint standards (markdownlint)
+- Use proper error handling with `set -euo pipefail`
+- Implement proper input validation and sanitization
+
+### Security Practices
+- Never hardcode sensitive information
+- Use proper quoting for all variables
+- Validate and sanitize all user inputs
+- Use secure temporary file creation (`mktemp`)
+- Implement proper sudo handling with privilege dropping
+
+### Version Control
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- Update version in script header, constant, and documentation
+- Maintain comprehensive CHANGELOG.md
+- Write detailed commit messages explaining changes
+
+### Testing
+- Test with `--dry-run` option before actual operations
+- Use `--max-packages` for limited testing
+- Verify package mapping with cache clearing
+- Test both GUI and CLI modes

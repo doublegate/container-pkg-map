@@ -58,3 +58,6 @@ Thumbs.db
 test/
 tests/
 testing/
+
+# Local memory file (not for version control)
+CLAUDE.local.md
