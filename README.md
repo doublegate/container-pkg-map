@@ -1,6 +1,15 @@
+<!-- markdownlint-disable MD033 -->
 # Container Package Mapper
 
-[![Version](https://img.shields.io/badge/version-4.5.1-blue.svg)](https://github.com/doublegate/container-pkg-map/releases)
+<p align="center">
+  <img src="images/CPM_Banner.png" alt="Container Package Mapper Banner" width="600">
+</p>
+
+<p align="center">
+  <a href="https://github.com/doublegate/container-pkg-map/releases">
+    <img src="https://img.shields.io/badge/version-4.6.0-blue.svg" alt="Version 4.6.0">
+  </a>
+</p>
 
 A comprehensive migration and backup tool for Fedora-based systems (including Bazzite, Silverblue, Kinoite) moving to Arch Linux.
 
@@ -155,3 +164,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Repology](https://repology.org/) for package mapping API
 - [BorgBackup](https://www.borgbackup.org/) for reliable encrypted backups
 - [Distrobox](https://github.com/89luca89/distrobox) for container management
+<!-- markdownlint-enable MD033 -->

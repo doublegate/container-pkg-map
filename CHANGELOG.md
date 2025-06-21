@@ -5,6 +5,28 @@ All notable changes to Container Package Mapper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.0] - 2025-06-20
+
+### Added
+- Project branding assets in images/ directory
+  - CPM_Banner.png - Project banner image
+  - CPM_Icon.ico - Windows icon file
+  - CPM_Icon.png - PNG icon file
+  - CPM_Logo.png - Project logo
+
+### Fixed
+- Resolved all GitHub Code Scanning security warnings
+- Fixed SC2024: sudo redirection issues
+- Fixed SC2001: replaced sed with parameter expansion for better performance
+- Fixed SC2028: replaced echo with printf for proper escape sequence handling
+- Fixed SC2030/SC2031: subshell variable modifications using temp file approach
+- Fixed SC2002: removed useless cat command
+- Fixed markdown lint issues in documentation
+
+### Security
+- Enhanced security by properly handling sudo redirections
+- Improved shell script safety with shellcheck compliance
+
 ## [4.5.1] - 2025-06-20
 
 ### Changed

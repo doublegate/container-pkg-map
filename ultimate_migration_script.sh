@@ -4,7 +4,7 @@
 #
 # Author: DoubleGate
 # Date: 2025-06-20
-# Version: 4.5.1
+# Version: 4.6.0
 #
 # Description:
 #   A comprehensive migration and backup script for Fedora-based systems moving to Arch Linux.
@@ -26,6 +26,7 @@
 #   - bash (v4.0+), borg, curl, jq, flatpak, distrobox, podman, rpm, stat, bc, zenity (for GUI)
 #
 # Version History:
+#   4.6.0 - Fixed security issues from GitHub "Code Scanning" and Markdown linting.
 #   4.5.1 - Fixed bug in container capture and package mapping.
 #   4.5 - Added container capture and package mapping.
 #   4.0 - Initial release.
@@ -36,7 +37,7 @@ set -euo pipefail
 # --- Constants & Configuration ---
 readonly SCRIPT_NAME
 SCRIPT_NAME="$(basename "$0")"
-readonly SCRIPT_VERSION="4.5.1"
+readonly SCRIPT_VERSION="4.6.0"
 readonly SCRIPT_URL="https://github.com/doublegate/container-pkg-map" # Keeping original repo link
 readonly CONTACT_EMAIL="parobek@gmail.com"
 readonly API_BASE_URL="https://repology.org/api/v1"
