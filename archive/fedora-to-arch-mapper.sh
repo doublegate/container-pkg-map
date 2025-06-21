@@ -113,7 +113,7 @@ fetch_from_api() {
 map_package() {
     local fedora_pkg="$1"
     local safe_pkg_name
-    safe_pkg_name=$(echo "${fedora_pkg}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+    safe_pkg_name="${fedora_pkg//[^a-zA-Z0-9._-]/_}"
     local cache_file="${CACHE_DIR}/${safe_pkg_name}"
 
     # 1. Check cache first.

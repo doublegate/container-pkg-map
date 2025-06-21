@@ -139,7 +139,7 @@ case "$MODE" in
       ISO=$(zenity --file-selection --title="Select CachyOS ISO" --file-filter="ISO files | *.iso" 2>/dev/null) || { zenity --error --text="ISO file required"; exit 1; }
       SUMFILE=$(zenity --file-selection --title="Select SHA256 sum file" --file-filter="SHA256 files | *.sha256sum" 2>/dev/null) || { zenity --error --text="Sum file required"; exit 1; }
       CUSTOM_INSTALLER=$(zenity --entry --title="Custom Installer" --text="Enter custom installer path or command (leave blank for auto-detection):" 2>/dev/null) || CUSTOM_INSTALLER=""
-      CUSTOM_INSTALLER_ARGS=($(zenity --entry --title="Installer Arguments" --text="Enter installer arguments (space-separated, leave blank for none):" 2>/dev/null)) || CUSTOM_INSTALLER_ARGS=()
+      mapfile -t CUSTOM_INSTALLER_ARGS < <(zenity --entry --title="Installer Arguments" --text="Enter installer arguments (space-separated, leave blank for none):" 2>/dev/null | tr ' ' '\n') || CUSTOM_INSTALLER_ARGS=()
     else
       ISO="$1"
       SUMFILE="$2"
@@ -296,9 +296,9 @@ backup() {
     flatpak list --app --columns=application >"$BACKUP_DIR/flatpaks.txt"
     log "Saved host package names & Flatpak list"
     # Capture container packages
-    if sudo -u "$REAL_USER" -H distrobox-list > "$BACKUP_DIR/containers_list.txt"; then
+    if sudo -u "$REAL_USER" -H distrobox-list | tee "$BACKUP_DIR/containers_list.txt" >/dev/null; then
         while read -r container; do
-            sudo -u "$REAL_USER" -H distrobox enter "$container" -- pacman -Qq >"$BACKUP_DIR/container-${container}-pkgs.txt" || log "Failed to capture packages for container: $container"
+            sudo -u "$REAL_USER" -H distrobox enter "$container" -- pacman -Qq 2>/dev/null | tee "$BACKUP_DIR/container-${container}-pkgs.txt" >/dev/null || log "Failed to capture packages for container: $container"
             log "Captured packages from container: $container"
         done < <(tail -n +2 "$BACKUP_DIR/containers_list.txt" | awk '{print $2}')
         sudo -u "$REAL_USER" -H distrobox-list | tail -n +2 | awk '{print $2, $4}' >"$BACKUP_DIR/containers.txt"
@@ -314,11 +314,11 @@ backup() {
 
     # Generate package mapping
     if [ -f /etc/fedora-release ]; then
-        FEDORA_VERSION=$(cat /etc/fedora-release | awk '{print $3}')
+        FEDORA_VERSION=$(awk '{print $3}' < /etc/fedora-release)
         REPO="fedora_${FEDORA_VERSION}"
         if command -v curl &> /dev/null && command -v jq &> /dev/null; then
             if $CLEAR_CACHE; then
-                rm -rf "$CACHE_DIR"/*
+                rm -rf "${CACHE_DIR:?}"/*
                 mkdir -p "$CACHE_DIR"
                 log "Cleared package mapping cache"
             fi
@@ -386,7 +386,15 @@ verify_iso() {
     fi
     sha256sum -c "$SUMFILE" | zenity --progress --pulsate --title="Checksum Verification" --text="Verifying ISO..." --auto-close || { log "Checksum validation failed"; if $GUI; then zenity --error --text="Checksum validation failed"; fi; exit 1; }
     log "Checksum OK"
-    gpg --verify "${ISO}.sig" && log "GPG signature OK" || { log "GPG signature failed"; if $GUI; then zenity --error --text="GPG signature failed"; fi; exit 1; }
+    if gpg --verify "${ISO}.sig"; then
+        log "GPG signature OK"
+    else
+        log "GPG signature failed"
+        if $GUI; then
+            zenity --error --text="GPG signature failed"
+        fi
+        exit 1
+    fi
 }
 
 install_cachyos_iso() {
@@ -516,7 +524,7 @@ restore() {
     # Reinstall Flatpaks with parallel processing
     if [ -s "$BACKUP_DIR/flatpaks.txt" ]; then
         total=$(wc -l < "$BACKUP_DIR/flatpaks.txt")
-        count=0
+        count=0  # shellcheck disable=SC2034
         xargs -n 1 -P "$PARALLEL" -I {} sh -c "echo \$((++count * 100 / $total)); $VERBOSE && echo '[VERBOSE] Installing Flatpak: {}' >> $LOG; retry_command flatpak install -y {} || echo 'Failed to install Flatpak {}' >> $LOG" < "$BACKUP_DIR/flatpaks.txt" | zenity --progress --title="Flatpak Installation" --text="Installing Flatpaks..." --auto-close || { log "Some Flatpak installations failed"; if $GUI; then zenity --error --text="Some Flatpak installations failed"; fi; exit 1; }
         log "Reinstalled Flatpaks"
     else

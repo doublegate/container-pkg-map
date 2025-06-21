@@ -72,7 +72,8 @@ LOG_FILE=""
 
 # Standard log message
 log() {
-    local message="[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] $1"
+    local message
+    message="[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] $1"
     if [[ -n "$LOG_FILE" ]]; then
         echo "$message" | tee -a "$LOG_FILE"
     else
@@ -83,7 +84,8 @@ log() {
 # Verbose/debug log message
 vlog() {
     if [[ "$VERBOSE" == "true" ]]; then
-        local message="[$(date '+%Y-%m-%d %H:%M:%S')] [DEBUG] $1"
+        local message
+        message="[$(date '+%Y-%m-%d %H:%M:%S')] [DEBUG] $1"
         # Verbose logs only go to stderr to not clutter output files
         echo "$message" >&2
     fi
@@ -91,7 +93,8 @@ vlog() {
 
 # Error log message
 error_log() {
-    local message="[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $1"
+    local message
+    message="[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $1"
     if [[ -n "$LOG_FILE" ]]; then
         echo "$message" | tee -a "$LOG_FILE" >&2
     else
@@ -164,7 +167,7 @@ map_package() {
     local fedora_pkg="$1"
     # Sanitize package name for use as a filename
     local safe_pkg_name
-    safe_pkg_name=$(echo "${fedora_pkg}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+    safe_pkg_name="${fedora_pkg//[^a-zA-Z0-9._-]/_}"
     local cache_file="${CACHE_DIR}/${safe_pkg_name}"
 
     # 1. Check cache first.
@@ -230,7 +233,7 @@ capture_container_packages() {
     fi
 
     local container_list_file="$OUTPUT_DIR/containers_list.txt"
-    if ! sudo -u "$REAL_USER" distrobox-list > "$container_list_file" 2>"$OUTPUT_DIR/distrobox-list-err.log"; then
+    if ! sudo -u "$REAL_USER" distrobox-list 2>"$OUTPUT_DIR/distrobox-list-err.log" | tee "$container_list_file" >/dev/null; then
         log "Failed to list distrobox containers. Check 'distrobox-list-err.log'. Skipping."
         return
     fi
@@ -278,7 +281,7 @@ capture_container_packages() {
         fi
 
         # Execute the command to get packages
-        if sudo -u "$REAL_USER" distrobox-enter "$container" -- sh -c "$pkg_cmd" >"$pkg_file" 2>"$err_file" < /dev/null; then
+        if sudo -u "$REAL_USER" distrobox-enter "$container" -- sh -c "$pkg_cmd" < /dev/null 2>"$err_file" | tee "$pkg_file" >/dev/null; then
              log "Successfully captured packages from '$container' to '$pkg_file'."
              ((captured_count++))
         else

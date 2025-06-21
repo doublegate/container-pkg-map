@@ -64,7 +64,8 @@ MAX_PACKAGES=0  # 0 means process all packages
 
 # Logging function with timestamp and optional verbose output
 log() {
-    local message="[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+    local message
+    message="[$(date '+%Y-%m-%d %H:%M:%S')] $1"
     # Ensure log file path is set before trying to write to it
     if [ -n "$LOG" ]; then
         echo "$message" | tee -a "$LOG"
@@ -130,7 +131,7 @@ log "Log file initialized at: $LOG"
 if $CLEAR_CACHE; then
     if [ -d "$CACHE_DIR" ]; then
         log "Clearing package mapping cache at $CACHE_DIR"
-        rm -rf "$CACHE_DIR"/*
+        rm -rf "${CACHE_DIR:?}"/*
     fi
 fi
 
@@ -219,7 +220,7 @@ get_arch_package_name() {
 capture_container_packages() {
     log "Starting Distrobox container package capture"
 
-    if ! sudo -u "$REAL_USER" distrobox-list > "$BACKUP_DIR/containers_list.txt" 2>&1; then
+    if ! sudo -u "$REAL_USER" distrobox-list 2>&1 | tee "$BACKUP_DIR/containers_list.txt" >/dev/null; then
         log "Failed to list distrobox containers. Skipping container backup."
         return 0
     fi
@@ -258,19 +259,19 @@ capture_container_packages() {
 
             if sudo -u "$REAL_USER" distrobox-enter "$container" -- which pacman &>/dev/null < /dev/null; then
                 vlog "Detected Arch-based container: $container"
-                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- pacman -Qq >"$pkg_file" 2>"$err_file" < /dev/null && \
+                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- pacman -Qq < /dev/null 2>"$err_file" | tee "$pkg_file" >/dev/null && \
                     log "Captured packages from Arch-based container: $container" ) || \
                     log "Failed to capture packages from Arch-based container: $container. See $err_file"
 
             elif sudo -u "$REAL_USER" distrobox-enter "$container" -- which dpkg &>/dev/null < /dev/null; then
                 vlog "Detected Debian-based container: $container"
-                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- sh -c "dpkg -l | awk '/^ii/ {print \$2}'" >"$pkg_file" 2>"$err_file" < /dev/null && \
+                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- sh -c "dpkg -l | awk '/^ii/ {print \$2}'" < /dev/null 2>"$err_file" | tee "$pkg_file" >/dev/null && \
                     log "Captured packages from Debian-based container: $container" ) || \
                     log "Failed to capture packages for Debian-based container: $container. See $err_file"
 
             elif sudo -u "$REAL_USER" distrobox-enter "$container" -- which rpm &>/dev/null < /dev/null; then
                 vlog "Detected RPM-based container: $container"
-                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- rpm -qa --qf '%{NAME}\n' >"$pkg_file" 2>"$err_file" < /dev/null && \
+                ( sudo -u "$REAL_USER" distrobox-enter "$container" -- rpm -qa --qf '%{NAME}\n' < /dev/null 2>"$err_file" | tee "$pkg_file" >/dev/null && \
                     log "Captured packages from RPM-based container: $container" ) || \
                     log "Failed to capture packages from RPM-based container: $container. See $err_file"
             else
