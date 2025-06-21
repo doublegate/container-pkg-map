@@ -159,7 +159,7 @@ fetch_from_api() {
 map_package() {
     local fedora_pkg="$1"
     local safe_pkg_name
-    safe_pkg_name=$(echo "${fedora_pkg}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+    safe_pkg_name="${fedora_pkg//[^a-zA-Z0-9._-]/_}"
     local cache_file="${CACHE_DIR}/${safe_pkg_name}"
 
     if [[ -f "${cache_file}" ]]; then
@@ -232,25 +232,28 @@ run_package_mapping() {
     echo "# Format: fedora_package -> arch_package" >> "$mapping_file"
 
     local processed=0 found=0
-    (
-    for i in $(seq 0 $((packages_to_process - 1))); do
-        local pkg="${packages_array[$i]}"
-        [[ -z "$pkg" ]] && continue
+    local temp_stats="/tmp/mapping_stats_$$"
+    
+    {
+        for i in $(seq 0 $((packages_to_process - 1))); do
+            local pkg="${packages_array[$i]}"
+            [[ -z "$pkg" ]] && continue
 
-        local arch_pkg
-        arch_pkg=$(map_package "$pkg")
+            local arch_pkg
+            arch_pkg=$(map_package "$pkg")
 
-        if [[ -n "$arch_pkg" ]]; then
-            echo "$pkg -> $arch_pkg" >> "$mapping_file"
-            ((found++))
-        else
-            echo "$pkg -> [NOT FOUND]" >> "$mapping_file"
-        fi
-        ((processed++))
-        echo $((processed * 100 / packages_to_process))
-        echo "# Processing $pkg ($processed/$packages_to_process)"
-    done
-    ) | if $GUI; then
+            if [[ -n "$arch_pkg" ]]; then
+                echo "$pkg -> $arch_pkg" >> "$mapping_file"
+                ((found++))
+            else
+                echo "$pkg -> [NOT FOUND]" >> "$mapping_file"
+            fi
+            ((processed++))
+            echo $((processed * 100 / packages_to_process))
+            echo "# Processing $pkg ($processed/$packages_to_process)"
+        done
+        echo "$found $processed" > "$temp_stats"
+    } | if $GUI; then
         zenity --progress --title="Package Mapping" --text="Mapping Fedora packages to Arch..." --auto-close
     else
         # Simple text progress bar for non-GUI
@@ -260,6 +263,12 @@ run_package_mapping() {
           fi
         done
         echo # Newline after progress bar
+    fi
+
+    # Read the stats back
+    if [[ -f "$temp_stats" ]]; then
+        read -r found processed < "$temp_stats"
+        rm -f "$temp_stats"
     fi
 
     log "Package mapping complete. Mapped: $found, Not Found: $((processed-found))."
@@ -319,10 +328,10 @@ _get_pkg_manager_cmd() {
         echo "pacman -Qq"
     elif sudo -u "$REAL_USER" distrobox-enter "$container_name" -- which dpkg &>/dev/null < /dev/null; then
         vlog "Detected Debian-based container."
-        echo "dpkg-query -W -f='\${Package}\n'"
+        printf "%s\n" "dpkg-query -W -f='\${Package}\n'"
     elif sudo -u "$REAL_USER" distrobox-enter "$container_name" -- which rpm &>/dev/null < /dev/null; then
         vlog "Detected RPM-based container."
-        echo "rpm -qa --qf '%{NAME}\n'"
+        printf "%s\n" "rpm -qa --qf '%{NAME}\n'"
     else
         echo "" # Return empty string if no supported manager is found
     fi
@@ -564,7 +573,7 @@ _restore_containers() {
             if [[ -s "$pkg_file" ]]; then
                 log "Installing packages in container '$name'..."
                 # Assuming the new host is Arch-based, so pacman is the target
-                if ! sudo -u "$REAL_USER" distrobox-enter "$name" -- sudo pacman -S --noconfirm --needed - < "$pkg_file"; then
+                if ! sudo -u "$REAL_USER" sh -c "cat '$pkg_file' | distrobox-enter '$name' -- sudo pacman -S --noconfirm --needed -"; then
                     error_log "Failed to install packages in container '$name'."
                 fi
             fi

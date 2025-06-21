@@ -30,12 +30,14 @@ A comprehensive migration and backup tool for Fedora-based systems (including Ba
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/doublegate/container-pkg-map.git
    cd container-pkg-map
    ```
 
 2. Make the script executable:
+
    ```bash
    chmod +x ultimate_migration_script.sh
    ```
@@ -87,7 +89,7 @@ A comprehensive migration and backup tool for Fedora-based systems (including Ba
 
 1. **System Configuration**: `/etc` directory
 2. **User Home**: Complete home directory with Borg deduplication
-3. **Package Lists**: 
+3. **Package Lists**:
    - RPM packages from host system
    - Flatpak applications
    - Packages from each Distrobox container
@@ -96,6 +98,7 @@ A comprehensive migration and backup tool for Fedora-based systems (including Ba
 ## Migration Workflow
 
 1. **On Fedora System**:
+
    ```bash
    # Create comprehensive backup
    ./ultimate_migration_script.sh backup ~/migration-backup
@@ -104,6 +107,7 @@ A comprehensive migration and backup tool for Fedora-based systems (including Ba
 2. **Transfer to New System**: Copy the backup directory to your new Arch Linux installation
 
 3. **On Arch System**:
+
    ```bash
    # Restore configuration and data
    ./ultimate_migration_script.sh restore ~/migration-backup
@@ -112,6 +116,7 @@ A comprehensive migration and backup tool for Fedora-based systems (including Ba
 ## Package Mapping
 
 The script uses the Repology API to find Arch Linux equivalents for Fedora packages:
+
 - Searches for exact matches first
 - Falls back to similar package names
 - Caches results for 24 hours to minimize API calls
@@ -134,6 +139,7 @@ The script uses the Repology API to find Arch Linux equivalents for Fedora packa
 ## Contributing
 
 Contributions are welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Commit your changes

@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Various bug fixes and stability improvements
 - Better error messages for common issues
 
-## [4.0] - 2024-01-20
+## [4.0.0] - 2024-01-20
 
 ### Added
 - Integrated all functionality from archived scripts into `ultimate_migration_script.sh`
