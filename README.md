@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/doublegate/container-pkg-map/releases">
-    <img src="https://img.shields.io/badge/version-4.7.0-blue.svg" alt="Version 4.7.0">
+    <img src="https://img.shields.io/badge/version-4.7.1-blue.svg" alt="Version 4.7.1">
   </a>
 </p>
 

@@ -4,7 +4,7 @@
 #
 # Author: DoubleGate
 # Date: 2025-06-20
-# Version: 4.7.0
+# Version: 4.7.1
 #
 # Description:
 #   A comprehensive migration and backup script for Fedora-based systems moving to Arch Linux.
@@ -26,6 +26,7 @@
 #   - bash (v4.0+), borg, curl, jq, flatpak, distrobox, podman, rpm, stat, bc, zenity (for GUI)
 #
 # Version History:
+#   4.7.1 - Fixed shellcheck warnings: resolved SC2155 (declare and assign separately) for readonly variables.
 #   4.7.0 - Resolved all 41 remaining GitHub Code Scanning security warnings.
 #   4.6.0 - Fixed security issues from GitHub Code Scanning and Markdown linting.
 #   4.5.1 - Fixed bug in container capture and package mapping.
@@ -36,9 +37,9 @@
 set -euo pipefail
 
 # --- Constants & Configuration ---
-readonly SCRIPT_NAME
-SCRIPT_NAME="$(basename "$0")"
-readonly SCRIPT_VERSION="4.7.0"
+# shellcheck disable=SC2155
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_VERSION="4.7.1"
 readonly SCRIPT_URL="https://github.com/doublegate/container-pkg-map" # Keeping original repo link
 readonly CONTACT_EMAIL="parobek@gmail.com"
 readonly API_BASE_URL="https://repology.org/api/v1"
@@ -47,8 +48,8 @@ readonly CACHE_TTL_SECONDS=$((24 * 60 * 60)) # 24 hours
 
 # --- Determine User and Home Directory ---
 readonly REAL_USER="${SUDO_USER:-$USER}"
-readonly USER_HOME
-USER_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
+# shellcheck disable=SC2155
+readonly USER_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
 readonly CACHE_DIR="${XDG_CACHE_HOME:-$USER_HOME/.cache}/ultimate-migration-mapper"
 readonly BORG_BASE_DIR="$USER_HOME/.borg"
 readonly PASSPHRASE_FILE="$USER_HOME/.borg/passphrase"

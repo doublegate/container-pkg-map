@@ -5,6 +5,18 @@ All notable changes to Container Package Mapper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.7.1 - 2025-06-21
+
+### Fixed
+- Fixed shellcheck warnings in main script:
+  - SC2155: Separated declaration and assignment for readonly variables (SCRIPT_NAME and USER_HOME)
+  - Added appropriate shellcheck disable comments where needed
+- Added `package_lists/` directory to .gitignore for better organization of generated package lists
+
+### Changed
+- Improved code quality by addressing shellcheck recommendations
+- Enhanced .gitignore organization for generated files
+
 ## 4.7.0 - 2025-06-20
 
 ### Fixed

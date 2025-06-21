@@ -23,6 +23,7 @@ migrate.log
 *~
 
 # Package lists (generated)
+package_lists/
 *-packages.txt
 *_packages.txt
 fedora_to_arch_mapping.txt
