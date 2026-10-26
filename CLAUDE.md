@@ -51,24 +51,24 @@ This repository contains the **Container Package Mapper** - a comprehensive migr
 
 The script is organized into several major sections:
 
-1. **Configuration and Setup (lines 1-52)**
+1. **Configuration and Setup (top of script)**
    - Strict mode settings (`set -euo pipefail`)
    - Constants for API endpoints, cache settings, version info
    - User and directory detection (handles sudo execution properly)
    - Global configuration variables
 
 2. **Core Functions**
-   - **Logging Functions** (lines 54-82): `log()`, `vlog()`, `error_log()` with timestamp formatting
-   - **Package Mapping Engine** (lines 117-254): 
+   - **Logging Functions**: `log()`, `vlog()`, `error_log()` with timestamp formatting
+   - **Package Mapping Engine** (`fetch_from_api`, `map_package`, `run_package_mapping`):
      - Uses Repology API to map Fedora packages to Arch equivalents
      - Implements caching with 24-hour TTL to minimize API calls
      - Rate limiting (1 request/second) to respect API limits
      - Robust error handling with retries
-   - **Borg Backup Integration** (lines 256-340):
+   - **Borg Backup Integration** (`backup`, `borg_with_progress`):
      - Encrypted backup using Borg with keyfile-blake2
      - Progress monitoring (GUI and CLI modes)
      - Compression options (lz4, zstd, none)
-   - **Container Management** (lines 296-318):
+   - **Container Management** (`run_container_capture`, `_capture_packages_for_container`, `_get_pkg_manager_cmd`):
      - Distrobox container detection and package capture
      - Multi-distro support (Arch, Debian, Fedora-based containers)
 
